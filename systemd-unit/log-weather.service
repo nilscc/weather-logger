@@ -1,0 +1,6 @@
+[Unit]
+Description=Log current temperature and humidity to DB
+
+[Service]
+ExecStart=%h/dev/weather-logger/log-weather.py
+WorkingDirectory=%h/dev/weather-logger

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import am2302
 import psycopg2
 import contextlib
@@ -43,6 +45,7 @@ def main():
 
     # only connect to database if we actually have data
     if d is not None:
+        print(f'Temperature: {d.temperature}, humidity: {d.humidity}')
         with connect() as con:
             insert(con, d)
 
