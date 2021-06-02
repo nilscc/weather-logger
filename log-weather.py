@@ -45,7 +45,7 @@ def main():
 
     # only connect to database if we actually have data
     if d is not None:
-        print(f'Temperature: {d.temperature}, humidity: {d.humidity}')
+        print(f'Temperature: {d.temperature}°C, humidity: {d.humidity}%')
         with connect() as con:
             insert(con, d)
 
