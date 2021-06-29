@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-import am2302
+import bme280.i2c
 import psycopg2
 import contextlib
 
 DB_PARAMS=''
-DB_SEARCH_PATH='am2302'
+DB_SEARCH_PATH='bme280'
 
 @contextlib.contextmanager
 def connect(dbParams=DB_PARAMS, dbSearchPath=DB_SEARCH_PATH):
@@ -22,32 +22,35 @@ def connect(dbParams=DB_PARAMS, dbSearchPath=DB_SEARCH_PATH):
     with psycopg2.connect(dbParams) as con:
         yield Connection(con)
 
-def insert(database, am2302_data):
+def insert(database, i2c):
     with database.cursor() as cur:
         cur.execute('''
-            insert into t_am2302
+            insert into t_bme280
                 ( temperature
                 , humidity
+                , pressure
                 )
             values
                 ( %s
                 , %s
+                , %s
                 )
         ''',
-            ( am2302_data.temperature
-            , am2302_data.humidity
+            ( i2c.temperature
+            , i2c.humidity
+            , i2c.pressure
             ))
             
 def main():
 
     # get sensor data
-    d = am2302.read(pin=7, retries=20)
+    i2c = bme280.i2c.i2c()
+    assert i2c.open()
+    assert i2c.runForcedMode()
 
     # only connect to database if we actually have data
-    if d is not None:
-        print(f'Temperature: {d.temperature}°C, humidity: {d.humidity}%')
-        with connect() as con:
-            insert(con, d)
+    with connect() as con:
+        insert(con, i2c)
 
 if __name__ == '__main__':
     main()

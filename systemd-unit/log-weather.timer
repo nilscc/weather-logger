@@ -2,7 +2,7 @@
 Description=Log current temperature and humidity to DB
 
 [Timer]
-OnCalendar=*:0/10
+OnCalendar=*:0/60
 
 [Install]
 WantedBy=timers.target
